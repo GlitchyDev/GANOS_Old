@@ -3,14 +3,15 @@
 #include "GANOS.h"
 #include "BattleTileActor.h"
 #include "StateClasses/BattleMapGameStateBase.h"
+#include "SchemaClasses/BaseSchemaPawn.h"
+#include "PaperSpriteComponent.h"
+#include "EnumHeaders/SchemaEnums.h"
 
 
 
 // Sets default values
+
 ABattleTileActor::ABattleTileActor()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
-
-
+    
 }

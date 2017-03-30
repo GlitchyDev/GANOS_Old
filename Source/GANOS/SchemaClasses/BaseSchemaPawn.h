@@ -3,6 +3,8 @@
 #pragma once
 
 #include "GameFramework/Pawn.h"
+#include "EnumHeaders/SchemaEnums.h"
+#include "PaperSpriteComponent.h"
 #include "BaseSchemaPawn.generated.h"
 
 UCLASS()
@@ -14,17 +16,5 @@ public:
 	// Sets default values for this pawn's properties
 	ABaseSchemaPawn();
 
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
-	
 	
 };
