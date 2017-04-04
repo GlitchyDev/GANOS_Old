@@ -57,7 +57,6 @@ enum class ESchemaStateEnum : uint8
 UENUM(BlueprintType)
 enum class ESchemaStatusEnum : uint8
 {
-    SSE2_WAPN_COMPLETED_ATTACK_CHECK,
     SSE2_WAPN_COMPLETED_MOVE_CHECK,
     SSE2_WAPN_COMPLETED_MOVE_CHECK_1,
     SSE2_WAPN_COMPLETED_MOVE_CHECK_2,
