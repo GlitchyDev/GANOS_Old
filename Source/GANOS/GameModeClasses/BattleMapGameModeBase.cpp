@@ -14,6 +14,7 @@ ABattleMapGameModeBase::ABattleMapGameModeBase()
     PlayerStateClass = ABattleMapPlayerState::StaticClass();
     GameStateClass = ABattleMapGameStateBase::StaticClass();
     PlayerControllerClass = ABattleMapPlayerController::StaticClass();
+    DefaultPawnClass = NULL;
     bUseSeamlessTravel = true;
 }
 

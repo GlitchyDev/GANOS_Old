@@ -97,6 +97,27 @@ FVector ABaseSchemaPawn::GenerateDefaultPosition(uint8 X, uint8 Y)
     return GameState->GetTile(X,Y)->GetActorLocation();
 }
 
+void ABaseSchemaPawn::OnRep_MaxHealth()
+{
+    UpdateHealthBar();
+}
+void ABaseSchemaPawn::OnRep_CurrentHealth()
+{
+    UpdateHealthBar();
+}
+void ABaseSchemaPawn::OnRep_DisplayName()
+{
+    UpdateNameTag();
+}
+
+void ABaseSchemaPawn::UpdateHealthBar()
+{
+    
+}
+void ABaseSchemaPawn::UpdateNameTag()
+{
+    
+}
 
 
 void ABaseSchemaPawn::SetupPlayerInputComponent(class UInputComponent* InputComponent)

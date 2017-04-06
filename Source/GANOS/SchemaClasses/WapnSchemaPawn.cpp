@@ -22,7 +22,7 @@ AWapnSchemaPawn::AWapnSchemaPawn()
     TargetTileY = 0;
     
     UpdateNameTag();
-    UpdateHealthTag();
+    UpdateHealthBar();
     switch((uint8)SchemaConfigurationType)
     {
         case ((uint8)ESchemaBattleConfigurationEnum::BTE_ATTACK):
@@ -77,7 +77,7 @@ void AWapnSchemaPawn::OnConstruction(const FTransform & Transform)
             break;
     }
     UpdateNameTag();
-    UpdateHealthTag();
+    UpdateHealthBar();
 }
 void AWapnSchemaPawn::CreateWapnVisual()
 {
@@ -150,7 +150,7 @@ void AWapnSchemaPawn::CreateWapnVisual()
     Wapn_Body_Sprite_Comp->AttachTo(SpriteBase);
     Wapn_Eye_Sprite_Comp->AttachTo(SpriteBase);
 }
-void AWapnSchemaPawn::UpdateHealthTag()
+void AWapnSchemaPawn::UpdateHealthBar()
 {
     double healthPercentage = (1.0 / MaxHealth) * CurrentHealth;
     int FullHealthBars = SizeOfHealthBar * healthPercentage;
@@ -216,7 +216,7 @@ void AWapnSchemaPawn::RecieveDamage(ABaseSchemaPawn* Attacker, EDamageTypeEnum T
         SchemaState = ESchemaStateEnum::SSE_WAPN_DAMAGED;
         SchemaStateStartTime = GameState->GetServerWorldTimeSeconds();
     }
-    UpdateHealthTag();
+    UpdateHealthBar();
 }
 
 void AWapnSchemaPawn::DealDamage(ABaseSchemaPawn* Schema)
@@ -327,7 +327,7 @@ void AWapnSchemaPawn::WapnLogic()
             }
             
             
-            if ((GameState->GetServerWorldTimeSeconds() - SchemaStateStartTime) >= 5)
+            if ((GameState->GetServerWorldTimeSeconds() - SchemaStateStartTime) >= 3)
             {
                 UE_LOG(LogTemp, Warning, TEXT("Complete!"));
                 
@@ -375,6 +375,7 @@ void AWapnSchemaPawn::WapnLogic()
         case (uint8)ESchemaStateEnum::SSE_WAPN_DYING:
             if((GameState->GetServerWorldTimeSeconds() - SchemaStateStartTime) > 5)
             {
+                GameState->ClearOwnerShip(this);
                 Destroy();
             }
             
@@ -419,6 +420,7 @@ void AWapnSchemaPawn::WapnAnimate()
 
 void AWapnSchemaPawn::AnimateWapnIdle()
 {
+    SetActorLocation(GenerateDefaultPosition(X, Y));
     float AnimationProgress3s = fmod((UGameplayStatics::GetTimeSeconds(GetWorld()) - SchemaStateStartTime), 3.0);
     if(AnimationProgress3s < 2.6)
     {

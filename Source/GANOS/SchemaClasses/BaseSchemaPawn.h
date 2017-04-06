@@ -32,6 +32,17 @@ public:
     virtual void RecieveDamage(ABaseSchemaPawn* Attacker, EDamageTypeEnum Type, uint8 DamageAmount);
     // Specifies that the Schema will attack another, allowing the Child Class to specify any details
     virtual void DealDamage(ABaseSchemaPawn* Schema);
+    // Overriden, used for Rep-notify
+    
+    virtual void UpdateHealthBar();
+    virtual void UpdateNameTag();
+    
+    UFUNCTION()
+    void OnRep_MaxHealth();
+    UFUNCTION()
+    void OnRep_CurrentHealth();
+    UFUNCTION()
+    void OnRep_DisplayName();
     
     EGANOSNetworkRoleEnum DetermineNetworkRole();
     
@@ -47,11 +58,11 @@ public:
     
     
     
-    UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category="C++")
+    UPROPERTY(ReplicatedUsing=OnRep_DisplayName, EditAnywhere, BlueprintReadWrite, Category="C++")
     FString DisplayName;
-    UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category="C++")
+    UPROPERTY(ReplicatedUsing=OnRep_MaxHealth, EditAnywhere, BlueprintReadWrite, Category="C++")
     uint8 MaxHealth;
-    UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category="C++")
+    UPROPERTY(ReplicatedUsing=OnRep_CurrentHealth, EditAnywhere, BlueprintReadWrite, Category="C++")
     uint8 CurrentHealth;
     UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category="C++")
     uint8 X;

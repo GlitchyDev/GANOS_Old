@@ -14,6 +14,14 @@ AMainMenuGameModeBase::AMainMenuGameModeBase()
 {
     PlayerStateClass = AMainMenuPlayerState::StaticClass();
     GameStateClass = AMainMenuGameStateBase::StaticClass();
+    HUDClass = AHUD::StaticClass();
+    PlayerControllerClass = AMainMenuPlayerController::StaticClass();
+    DefaultPawnClass = NULL;
+    
+    bUseSeamlessTravel = true;
+    
+    AuthenticationList.Add(FAuthentication(FString("Defoko"),FString("UTAU")));
+    AuthenticationList.Add(FAuthentication(FString("Devotedworker"),FString("MurderFace")));
 }
 
 void AMainMenuGameModeBase::BeginPlay()
@@ -98,5 +106,5 @@ void AMainMenuGameModeBase::GoToBattleMap()
 {
     UE_LOG(ServerMainMenuLog, Warning,TEXT("Executing Delayed Action!"));
 
-    GetWorld()->ServerTravel("/Game/MultiplayerLevel");
+    GetWorld()->ServerTravel("/Game/TestingBattleWorld");
 }

@@ -58,13 +58,16 @@ public:
     virtual void DealDamage(ABaseSchemaPawn* Schema) override;
     virtual void GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const override;
     
+    virtual void UpdateHealthBar() override;
+    virtual void UpdateNameTag() override;
+    
     // Creates and Loads the Default Sprites
     void CreateWapnVisual();
     
     // Called when a Change to the Schemas name happens
-    void UpdateNameTag();
+    //void UpdateNameTag();
     // Called when Health Changes
-    void UpdateHealthTag();
+    //void UpdateHealthTag();
     
     // The Default Schema Idle Animation... Blinking, doing facial expresions ect.
     void AnimateWapnIdle();

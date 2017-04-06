@@ -12,8 +12,15 @@ UCLASS()
 class GANOS_API AMainMenuPlayerController : public APlayerController
 {
 	GENERATED_BODY()
-	
-	
-	
+
+public:
+    AMainMenuPlayerController();
+    virtual void BeginPlay() override;
+    
+    UFUNCTION(BlueprintCallable, Category="C++")
+    void ConnectMultiplayer(FString Username, FString Password);
+    
+    virtual void SetupInputComponent() override;
+    
 	
 };
