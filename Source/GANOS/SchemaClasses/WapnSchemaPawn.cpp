@@ -228,13 +228,13 @@ void AWapnSchemaPawn::DealDamage(ABaseSchemaPawn* Schema)
 void AWapnSchemaPawn::WapnLogic()
 {
     // Measured from 0.0 - 1.0
-    float MovementAnimationProgress = (1.0/5.0) * (GameState->GetServerWorldTimeSeconds() - SchemaStateStartTime);
+    float MovementAnimationProgress = (1.0/3.0) * (GameState->GetServerWorldTimeSeconds() - SchemaStateStartTime);
     
     
     switch((uint8)SchemaState)
     {
         case (uint8)ESchemaStateEnum::SSE_WAPN_ATK_IDLE:
-            if ((GameState->GetServerWorldTimeSeconds() - SchemaStateStartTime) >= 5)
+            if ((GameState->GetServerWorldTimeSeconds() - SchemaStateStartTime) >= 3)
             {
                 if(GenerateAttackPath())
                 {
@@ -460,7 +460,7 @@ void AWapnSchemaPawn::AnimateWapnMove()
         Wapn_Eye_Sprite_Comp->SetSprite(Wapn_Idle_Eye_2_Sprite);
     }
     
-    float AnimationProgress = (1.0/5.0) * (GameState->GetServerWorldTimeSeconds() - SchemaStateStartTime);
+    float AnimationProgress = (1.0/3.0) * (GameState->GetServerWorldTimeSeconds() - SchemaStateStartTime);
     FVector TargetLocation = GenerateDefaultPosition(TargetTileX, TargetTileY);
     FVector StartingLocation = GenerateDefaultPosition(X, Y);
     FVector PanelDistance = TargetLocation - StartingLocation;
