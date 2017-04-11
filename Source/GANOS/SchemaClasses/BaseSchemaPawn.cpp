@@ -7,8 +7,8 @@
 #include "Core.h"
 #include "UnrealNetwork.h"
 
-
 DEFINE_LOG_CATEGORY(BaseSchemaLog);
+
 
 
 ABaseSchemaPawn::ABaseSchemaPawn()
@@ -18,8 +18,10 @@ ABaseSchemaPawn::ABaseSchemaPawn()
     bReplicates = true;
     bAlwaysRelevant = true;
     bReplicateMovement = false;
+    // Clients will simulate their own movement
 }
 
+// Required for use Methods
 
 void ABaseSchemaPawn::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const
 {
@@ -35,7 +37,6 @@ void ABaseSchemaPawn::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & O
     DOREPLIFETIME(ABaseSchemaPawn, SchemaStatuses);
     
 }
-// This is where any Variable that is replicated needs to go ._.
 
 
 
@@ -43,11 +44,11 @@ void ABaseSchemaPawn::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & O
 
 void ABaseSchemaPawn::DealDamage(ABaseSchemaPawn* Schema)
 {
-    // Upper Classes implement this
+    // Sub Classes implement this
 }
 void ABaseSchemaPawn::RecieveDamage(ABaseSchemaPawn* Attacker, EDamageTypeEnum Type, uint8 DamageAmount)
 {
-    // Upper Classes implement this
+    // Sub Classes implement this
 }
 
 void ABaseSchemaPawn::BeginPlay()
@@ -66,6 +67,7 @@ void ABaseSchemaPawn::Tick( float DeltaTime )
 
 void ABaseSchemaPawn::SchemaTick(float DeltaSeconds)
 {
+    // Sub Classes implement this
 }
 
 
@@ -88,8 +90,6 @@ void ABaseSchemaPawn::UnpossesTile(uint8 X, uint8 Y)
 
 FVector ABaseSchemaPawn::GenerateDefaultPosition()
 {
-    // In the future we need to get the "True Center" for each map
-    // We would grab the tiles true possition but it can't be determined if the Gamestate has properly loaded in the Tile Actors
     return GameState->GetTile(X,Y)->GetActorLocation();
 }
 FVector ABaseSchemaPawn::GenerateDefaultPosition(uint8 X, uint8 Y)
@@ -97,6 +97,7 @@ FVector ABaseSchemaPawn::GenerateDefaultPosition(uint8 X, uint8 Y)
     return GameState->GetTile(X,Y)->GetActorLocation();
 }
 
+// On Replication Functions
 void ABaseSchemaPawn::OnRep_MaxHealth()
 {
     UpdateHealthBar();
@@ -109,7 +110,8 @@ void ABaseSchemaPawn::OnRep_DisplayName()
 {
     UpdateNameTag();
 }
-
+// Functions implemented by upper classes due to the UE4 bug where components can't be
+// Added from Child Classes to Super class Components
 void ABaseSchemaPawn::UpdateHealthBar()
 {
     
@@ -119,12 +121,14 @@ void ABaseSchemaPawn::UpdateNameTag()
     
 }
 
+// Player specific Methos
 
 void ABaseSchemaPawn::SetupPlayerInputComponent(class UInputComponent* InputComponent)
 {
     Super::SetupPlayerInputComponent(InputComponent);
 }
 
+// Misc Methods that should be moved
 EGANOSNetworkRoleEnum ABaseSchemaPawn::DetermineNetworkRole()
 {
     switch((uint8)GetNetMode())

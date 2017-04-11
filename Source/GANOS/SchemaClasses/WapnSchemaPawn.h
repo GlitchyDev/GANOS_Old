@@ -7,8 +7,8 @@
 
 /**
  * This Schema is based on the Chesspiece "Pawn"
- As per other members of the Chess Schema, it gains an additional ability if a King Schema is in play
- This was also the first Schema properly implemented :D
+ As per other members of the Chess Schema, it gains an additional ability if a King Schema is in play ( The ability to Promote into another Schema )
+ This was also probably the first Schema properly implemented :D
  
  
  AttackConfiguration:
@@ -21,28 +21,18 @@
  
  Support Configuration
  It is placed on the opponents side of the battle field, and when an opponent moves to the side of it, it will EnPassent it and then reset to the original panel. This is an alternative form of defend.
- 
- Idle Needs to
- - Animate ( Preferably with realistic emotions )
- - When Idle times out, generate path and switch to the appropriate mode
+
  
  Attack:
- - If it passes the half way point and a valid target it'll do the deal damage and teleport back
+ - If it passes the half way point and has a valid target it'll do the deal damage and teleport back
  
  
  
  
- // Ok so we need to
- // Restructure the game allow the use of a dedicated server ( Not much, as the Gamemode isn't replicated ( not that we need it )
- // Thankfully the Gamestate carries over so we know that we at least have our Tile and Actor List
- 
- // Animations can be done on the Server and Replicated to the Client
- // AI needs to be done on the Authority, ( Singleplayer or DedicatedServer/Host )
- // The AI changes need to reflect on the Client ( If its Singleplayer, just have an avaliable else in SchemaTick
- // Variables need to replicate
- // Anything that would affect a Clients output that would eliminate unintentional input
- // Anything the Client needs for Player Visuals ( Name, Chips, HP, Ect )
- // If the Replicated Movement is a pain we will use anything needed for animations
+ On the Todo list for this class we need to
+ - Implement the other Configurations
+ - Clean up the code base, its too cluttered for my taste
+ - Re-do the Sprite and add some more impresive animations
  */
 UCLASS()
 class GANOS_API AWapnSchemaPawn : public ABaseSchemaPawn
@@ -52,55 +42,101 @@ public:
     AWapnSchemaPawn();
     
     virtual void BeginPlay() override;
-    virtual void OnConstruction(const FTransform & Transform) override;
     virtual void SchemaTick(float DeltaSeconds) override;
     virtual void RecieveDamage(ABaseSchemaPawn* Attacker, EDamageTypeEnum Type, uint8 DamageAmount) override;
     virtual void DealDamage(ABaseSchemaPawn* Schema) override;
+    virtual void OnConstruction(const FTransform & Transform) override;
     virtual void GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const override;
-    
     virtual void UpdateHealthBar() override;
     virtual void UpdateNameTag() override;
+
+    // GENERAL METHODS
     
-    // Creates and Loads the Default Sprites
-    void CreateWapnVisual();
+    /**
+     Triggers any Wapn logic that is needed
+     */
+    void WapnLogic();
+    /**
+     Triggers any Wapn animations that is needed
+     */
+    void WapnAnimate();
+
     
-    // Called when a Change to the Schemas name happens
-    //void UpdateNameTag();
-    // Called when Health Changes
-    //void UpdateHealthTag();
-    
-    // The Default Schema Idle Animation... Blinking, doing facial expresions ect.
-    void AnimateWapnIdle();
-    // A Simple Slide from the Current X/Y to the TargetTileX/Y, add some sort of eye expression
-    void AnimateWapnMove();
-    // A Simple Animated jump from the Current X/Y to the TargetTileXY
-    // Preferably the eye of the Wapn would have a "prepaired" face and then a "SHIT WTF AHHHH" Face until it lands
-    void AnimateWapnAttack();
-    // A Red Flash and the Hurt Eyes
-    void AnimateWapnHurt();
-    // A Closing of Eyes and Sink
-    void AnimateWapnDying();
-    
-    // Figures out where it needs to go after Reaching the Opponents Side*
+    // SERVER LOGIC FUNCTIONS
+    /**
+     A Method that figures out which side is the Wapns side, and picks a random tile from the farthest out point, if it fails the Wapn will be set back into idle mode
+     */
     void Relocate();
     // Promote into a different Chess Schema*
     //void Promote();
     
-    // Does the Logic needed for the Authority
-    void WapnLogic();
-    // Does the Visuals needed for the Client
-    void WapnAnimate();
-    
-    // Clears any AI markers that are not required for normal function
+    /**
+     Removes any Logic markers added during Attacks, Moves, Death, ect so it can switch to another state
+     */
     void ClearMarkingStatuses();
     
+    /**
+     Attempts to generate an Attack path
+     Prioritizes
+     - Attacks
+     - Moves
+     - If none, relocate
+     Plan: Add in El-Passant detection
+     */
     bool GenerateAttackPath();
+    /**
+     UNDEVELOPED
+     This one would stay in one place until an attack comes along
+     */
     bool GenerateDefendPath();
+    /**
+     UNDEVELOPED
+     This one would try to race across to the other side of the board to promote itself
+     */
     bool GenerateSupportPath();
-    // Generate Attack Path ( Generates path then decides if to advance or attack)
-    // Generate Defence Path ( Check for Diagnal, false if nobody is there )
-    // Generate Support Path ( Check for sides )
     
+
+    
+    
+    // CLIENT ANIMATION METHODS
+    /*
+     Used to add the Sprite component visuals
+     Plan: Only add the Components on Clients that NEED it ( No Dedicated Server )
+     */
+    void CreateWapnVisual();
+    /**
+     Animates Wapn to do the standard idle animation
+     Plan: Make the time between blinks randomish, and add some more facial expresions
+     */
+    void AnimateWapnIdle();
+    /**
+     Slides Wapn across the screen with a Serious expression on its face
+     Plan: Make the serious expression pop up before it moves, and add a ending animation
+     */
+    void AnimateWapnMove();
+    /**
+     A Animated Wapn attack where it jumps and aims for the tile its attacking
+     Plan: Add some particle effects for the attack and the relocation, and an animation when it fails
+     */
+    void AnimateWapnAttack();
+    /**
+     A animated Wapn hurt expresion
+     Plan: Add some color changes
+     */
+    void AnimateWapnHurt();
+    /**
+     A animated slide down through the panel
+     Plan: Add an animated disolve sequence
+     */
+    void AnimateWapnDying();
+    
+    
+    
+
+    
+    
+
+    // SPRITE COMPONENTS and SPRITES
     UPaperSpriteComponent* Wapn_Body_Sprite_Comp;
     UPaperSpriteComponent* Wapn_Eye_Sprite_Comp;
     UPaperSprite* Wapn_Body_Sprite;
@@ -110,6 +146,20 @@ public:
     UPaperSprite* Wapn_Hurt_Eye_1_Sprite;
     UPaperSprite* Wapn_Hurt_Eye_2_Sprite;
     
+    // This is the base of the ENTIRE Actor It keeps the Nametag and SpriteBase relative
+    class UArrowComponent* Base;
+    // This is the Base of the Sprites, use this to trascribe and rotate the entire sprite model but not the name
+    class UArrowComponent* SpriteBase;
+    // This is the Base of the Nametag System, don't mess with this too much
+    class UArrowComponent* NameBase;
+    
+    // This is where the "Name" of the Schema ( Monster ) is put, have it take it from SchemaName and add stuff if needed
+    class UTextRenderComponent* NameTag;
+    // This is where the "Health" of the Schema ( Monster ) is put, using a varied amount of Bars turning into spaces for Percentage
+    class UTextRenderComponent* HealthBar;
+    
+    
+    // WAPN needed Instance Variables
     /*
      This is the X of the Current Target Panel
      If No Panel is being Seeked 0 will be used
@@ -163,26 +213,13 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="C++")
     bool Promotable;
     
-    // This is all the Same Regardless of Schema
-    // ***************************
-    
     /*
      This will determine how many bars the Healthbar is
      */
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="C++")
     uint8 SizeOfHealthBar;
     
-    // This is the base of the ENTIRE Actor It keeps the Nametag and SpriteBase relative
-    class UArrowComponent* Base;
-    // This is the Base of the Sprites, use this to trascribe and rotate the entire sprite model but not the name
-    class UArrowComponent* SpriteBase;
-    // This is the Base of the Nametag System, don't mess with this too much
-    class UArrowComponent* NameBase;
-    
-    // This is where the "Name" of the Schema ( Monster ) is put, have it take it from SchemaName and add stuff if needed
-    class UTextRenderComponent* NameTag;
-    // This is where the "Health" of the Schema ( Monster ) is put, using a varied amount of Bars turning into spaces for Percentage
-    class UTextRenderComponent* HealthBar;
+
     
     
     

@@ -38,14 +38,55 @@ AWapnSchemaPawn::AWapnSchemaPawn()
     
 }
 
-
-void AWapnSchemaPawn::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const
+void AWapnSchemaPawn::BeginPlay()
 {
-    Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-    DOREPLIFETIME(AWapnSchemaPawn, TargetTileX);
-    DOREPLIFETIME(AWapnSchemaPawn, TargetTileY);
+    Super::BeginPlay();
+    SchemaStateStartTime = GameState->GetServerWorldTimeSeconds();
+    
 }
 
+void AWapnSchemaPawn::SchemaTick(float DeltaSeconds)
+{
+    Super::SchemaTick(DeltaSeconds);
+    switch((uint8)DetermineNetworkRole())
+    {
+        case (uint8)EGANOSNetworkRoleEnum::GNRE_ANIMATE_AND_LOGIC:
+            WapnLogic();
+            WapnAnimate();
+            break;
+        case (uint8)EGANOSNetworkRoleEnum::GNRE_LOGIC_ONLY:
+            WapnLogic();
+            break;
+        case (uint8)EGANOSNetworkRoleEnum::GNRE_ANIMATE_ONLY:
+            WapnAnimate();
+            break;
+    }
+}
+
+void AWapnSchemaPawn::RecieveDamage(ABaseSchemaPawn* Attacker, EDamageTypeEnum Type, uint8 DamageAmount)
+{
+    CurrentHealth -= DamageAmount;
+    if(CurrentHealth <= 0)
+    {
+        SchemaState = ESchemaStateEnum::SSE_WAPN_DYING;
+        SchemaStateStartTime = GameState->GetServerWorldTimeSeconds();
+        // Make it "dead" imediately
+    }
+    else
+    {
+        SchemaState = ESchemaStateEnum::SSE_WAPN_DAMAGED;
+        SchemaStateStartTime = GameState->GetServerWorldTimeSeconds();
+    }
+    UpdateHealthBar();
+    
+    
+}
+
+void AWapnSchemaPawn::DealDamage(ABaseSchemaPawn* Schema)
+{
+    Schema->RecieveDamage(this,EDamageTypeEnum::DTE_DEBUG,1);
+    Relocate();
+}
 
 void AWapnSchemaPawn::OnConstruction(const FTransform & Transform)
 {
@@ -79,6 +120,16 @@ void AWapnSchemaPawn::OnConstruction(const FTransform & Transform)
     UpdateNameTag();
     UpdateHealthBar();
 }
+
+
+void AWapnSchemaPawn::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const
+{
+    Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+    DOREPLIFETIME(AWapnSchemaPawn, TargetTileX);
+    DOREPLIFETIME(AWapnSchemaPawn, TargetTileY);
+}
+
+
 void AWapnSchemaPawn::CreateWapnVisual()
 {
     Base = CreateDefaultSubobject<UArrowComponent>(TEXT("ActorBase"));
@@ -171,59 +222,16 @@ void AWapnSchemaPawn::UpdateNameTag()
     
 }
 
-void AWapnSchemaPawn::BeginPlay()
-{
-    Super::BeginPlay();
-    SchemaStateStartTime = GameState->GetServerWorldTimeSeconds();
-    
-}
 
-void AWapnSchemaPawn::SchemaTick(float DeltaSeconds)
-{
-    Super::SchemaTick(DeltaSeconds);
-    switch((uint8)DetermineNetworkRole())
-    {
-        case (uint8)EGANOSNetworkRoleEnum::GNRE_ANIMATE_AND_LOGIC:
-            WapnLogic();
-            WapnAnimate();
-            break;
-        case (uint8)EGANOSNetworkRoleEnum::GNRE_LOGIC_ONLY:
-            WapnLogic();
-            break;
-        case (uint8)EGANOSNetworkRoleEnum::GNRE_ANIMATE_ONLY:
-            WapnAnimate();
-            break;
-    }
-}
+
+
 
 /*
  virtual void RecieveDamage(ABaseSchemaPawn* Attacker, EDamageTypeEnum Type, uint8 DamageAmount) override;
  virtual void DealDamage(ABaseSchemaPawn* Schema) override;
  */
 
-void AWapnSchemaPawn::RecieveDamage(ABaseSchemaPawn* Attacker, EDamageTypeEnum Type, uint8 DamageAmount)
-{
-    CurrentHealth -= DamageAmount;
-    if(CurrentHealth <= 0)
-    {
-        SchemaState = ESchemaStateEnum::SSE_WAPN_DYING;
-        SchemaStateStartTime = GameState->GetServerWorldTimeSeconds();
-        // Make it "dead" imediately
-        GameState->ClearOwnerShip(this);
-    }
-    else
-    {
-        SchemaState = ESchemaStateEnum::SSE_WAPN_DAMAGED;
-        SchemaStateStartTime = GameState->GetServerWorldTimeSeconds();
-    }
-    UpdateHealthBar();
-}
 
-void AWapnSchemaPawn::DealDamage(ABaseSchemaPawn* Schema)
-{
-    Schema->RecieveDamage(this,EDamageTypeEnum::DTE_DEBUG,1);
-    Relocate();
-}
 
 void AWapnSchemaPawn::WapnLogic()
 {
@@ -259,12 +267,12 @@ void AWapnSchemaPawn::WapnLogic()
                     DealDamage(Schema);
                 }
                 
-               // if(GameState->GetTile(TargetX,TargetY);
+                // if(GameState->GetTile(TargetX,TargetY);
             }
-// ********************
+            // ********************
             break;
             
-        
+            
         case (uint8)ESchemaStateEnum::SSE_WAPN_ATK_MOVE:
             if(SchemaStatuses.Contains(ESchemaStatusEnum::SEE2_WAPN_DOUBLESTEP))
             {
@@ -377,6 +385,7 @@ void AWapnSchemaPawn::WapnLogic()
             {
                 GameState->ClearOwnerShip(this);
                 Destroy();
+                
             }
             
             break;
@@ -422,25 +431,25 @@ void AWapnSchemaPawn::AnimateWapnIdle()
 {
     SetActorLocation(GenerateDefaultPosition(X, Y));
     float AnimationProgress3s = fmod((UGameplayStatics::GetTimeSeconds(GetWorld()) - SchemaStateStartTime), 3.0);
-    if(AnimationProgress3s < 2.6)
+    if(AnimationProgress3s < 0.6)
     {
         Wapn_Eye_Sprite_Comp->SetSprite(Wapn_Idle_Eye_1_Sprite);
     }
     else
     {
-        if(AnimationProgress3s < 2.70)
+        if(AnimationProgress3s < 0.70)
         {
             Wapn_Eye_Sprite_Comp->SetSprite(Wapn_Idle_Eye_2_Sprite);
         }
         else
         {
-            if(AnimationProgress3s < 2.8)
+            if(AnimationProgress3s < 0.8)
             {
                 Wapn_Eye_Sprite_Comp->SetSprite(Wapn_Idle_Eye_3_Sprite);
             }
             else
             {
-                if(AnimationProgress3s < 2.85)
+                if(AnimationProgress3s < 0.85)
                 {
                     Wapn_Eye_Sprite_Comp->SetSprite(Wapn_Idle_Eye_2_Sprite);
                 }
@@ -473,7 +482,7 @@ void AWapnSchemaPawn::AnimateWapnMove()
 // This will be a diagnal jump, so extra compatablility is not required
 void AWapnSchemaPawn::AnimateWapnAttack()
 {
-
+    
     float AnimationProgress = (1.0/0.3) * (GameState->GetServerWorldTimeSeconds() - SchemaStateStartTime);
     FVector TargetLocation = GenerateDefaultPosition(TargetTileX, TargetTileY);
     FVector StartingLocation = GenerateDefaultPosition(X, Y);
@@ -682,7 +691,7 @@ bool AWapnSchemaPawn::GenerateAttackPath()
         }
         
     }
-
+    
     Relocate();
     return false;
 }
