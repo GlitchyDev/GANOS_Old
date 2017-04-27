@@ -130,77 +130,6 @@ void AWapnSchemaPawn::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & O
 }
 
 
-void AWapnSchemaPawn::CreateWapnVisual()
-{
-    Base = CreateDefaultSubobject<UArrowComponent>(TEXT("ActorBase"));
-    Base->SetVisibility(false);
-    Base->SetRelativeRotation(FRotator(0,0,0));
-    Base->AttachTo(RootComponent);
-    
-    SpriteBase = CreateDefaultSubobject<UArrowComponent>(TEXT("SpriteBase"));
-    SpriteBase->SetVisibility(false);
-    SpriteBase->SetRelativeRotation(FRotator(0,270,0));
-    SpriteBase->AttachTo(Base);
-    
-    NameBase = CreateDefaultSubobject<UArrowComponent>(TEXT("NameBase"));
-    NameBase->SetVisibility(false);
-    NameBase->SetRelativeRotation(FRotator(0,180,0));
-    NameBase->AttachTo(Base);
-    
-    NameTag = CreateDefaultSubobject<UTextRenderComponent>(TEXT("NameTag"));
-    NameTag->SetRelativeLocationAndRotation(FVector(0,0,350), FRotator(0,0,0));
-    NameTag->SetWorldSize(50.0);
-    NameTag->SetText("BROKEN NAMETAG UPDATE");
-    NameTag->SetHorizontalAlignment(EHorizTextAligment::EHTA_Center);
-    NameTag->SetVerticalAlignment(EVerticalTextAligment::EVRTA_TextCenter);
-    NameTag->AttachTo(NameBase);
-    
-    
-    HealthBar = CreateDefaultSubobject<UTextRenderComponent>(TEXT("HealthBar"));
-    HealthBar->SetRelativeLocationAndRotation(FVector(0,0,310), FRotator(0,0,0));
-    HealthBar->SetWorldSize(50.0);
-    HealthBar->SetText("BROKEN HEALTHBAR UPDATE");
-    HealthBar->SetHorizontalAlignment(EHorizTextAligment::EHTA_Center);
-    HealthBar->SetVerticalAlignment(EVerticalTextAligment::EVRTA_TextCenter);
-    HealthBar->AttachTo(NameBase);
-    
-    Wapn_Body_Sprite_Comp = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("Wapn_Body_Sprite_Comp"));
-    Wapn_Eye_Sprite_Comp = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("Wapn_Eye_Sprite_Comp"));
-    static ConstructorHelpers::FObjectFinder<UPaperSprite> Wapn_Body_SpriteObj(TEXT("PaperSprite'/Game/GanosContent/Sprites/Wapn/Wapn_Body_Sprite.Wapn_Body_Sprite'"));
-    
-    static ConstructorHelpers::FObjectFinder<UPaperSprite> Wapn_Idle_Eye_1_SpriteObj(TEXT("PaperSprite'/Game/GanosContent/Sprites/Wapn/Wapn_Eye_Idle_1_Sprite.Wapn_Eye_Idle_1_Sprite'"));
-    static ConstructorHelpers::FObjectFinder<UPaperSprite> Wapn_Idle_Eye_2_SpriteObj(TEXT("PaperSprite'/Game/GanosContent/Sprites/Wapn/Wapn_Eye_Idle_2_Sprite.Wapn_Eye_Idle_2_Sprite'"));
-    static ConstructorHelpers::FObjectFinder<UPaperSprite> Wapn_Idle_Eye_3_SpriteObj(TEXT("PaperSprite'/Game/GanosContent/Sprites/Wapn/Wapn_Eye_Idle_3_Sprite.Wapn_Eye_Idle_3_Sprite'"));
-    static ConstructorHelpers::FObjectFinder<UPaperSprite> Wapn_Hurt_Eye_1_SpriteObj(TEXT("PaperSprite'/Game/GanosContent/Sprites/Wapn/Wapn_Eye_Hurt_1_Sprite.Wapn_Eye_Hurt_1_Sprite'"));
-    static ConstructorHelpers::FObjectFinder<UPaperSprite> Wapn_Hurt_Eye_2_SpriteObj(TEXT("PaperSprite'/Game/GanosContent/Sprites/Wapn/Wapn_Eye_Hurt_2_Sprite.Wapn_Eye_Hurt_2_Sprite'"));
-    
-    
-    static ConstructorHelpers::FObjectFinder<UMaterial> Material(TEXT("Material'/Paper2D/DefaultLitSpriteMaterial.DefaultLitSpriteMaterial'"));
-    UMaterial* SpriteMaterial = (UMaterial*)Material.Object;
-    
-    
-    Wapn_Body_Sprite = Wapn_Body_SpriteObj.Object;
-    Wapn_Idle_Eye_1_Sprite = Wapn_Idle_Eye_1_SpriteObj.Object;
-    Wapn_Idle_Eye_2_Sprite = Wapn_Idle_Eye_2_SpriteObj.Object;
-    Wapn_Idle_Eye_3_Sprite = Wapn_Idle_Eye_3_SpriteObj.Object;
-    Wapn_Hurt_Eye_1_Sprite = Wapn_Hurt_Eye_1_SpriteObj.Object;
-    Wapn_Hurt_Eye_2_Sprite = Wapn_Hurt_Eye_2_SpriteObj.Object;
-    
-    Wapn_Body_Sprite_Comp->SetSprite(Wapn_Body_Sprite);
-    Wapn_Body_Sprite_Comp->SetRelativeLocation(FVector(0,0,135));
-    Wapn_Body_Sprite_Comp->SetRelativeScale3D(FVector(1,1,1));
-    Wapn_Body_Sprite_Comp->SetRelativeRotation(FRotator(0,0,0));
-    Wapn_Body_Sprite_Comp->SetMaterial(0, SpriteMaterial);
-    Wapn_Eye_Sprite_Comp->SetSprite(Wapn_Idle_Eye_1_Sprite);
-    Wapn_Eye_Sprite_Comp->SetRelativeLocation(FVector(-29,-0.2,226));
-    Wapn_Eye_Sprite_Comp->SetRelativeScale3D(FVector(1,1,1));
-    Wapn_Eye_Sprite_Comp->SetRelativeRotation(FRotator(0,0,0));
-    Wapn_Eye_Sprite_Comp->SetMaterial(0, SpriteMaterial);
-    
-    
-    Wapn_Body_Sprite_Comp->AttachTo(SpriteBase);
-    Wapn_Eye_Sprite_Comp->AttachTo(SpriteBase);
-}
 void AWapnSchemaPawn::UpdateHealthBar()
 {
     double healthPercentage = (1.0 / MaxHealth) * CurrentHealth;
@@ -225,14 +154,6 @@ void AWapnSchemaPawn::UpdateNameTag()
 
 
 
-
-/*
- virtual void RecieveDamage(ABaseSchemaPawn* Attacker, EDamageTypeEnum Type, uint8 DamageAmount) override;
- virtual void DealDamage(ABaseSchemaPawn* Schema) override;
- */
-
-
-
 void AWapnSchemaPawn::WapnLogic()
 {
     // Measured from 0.0 - 1.0
@@ -242,298 +163,177 @@ void AWapnSchemaPawn::WapnLogic()
     switch((uint8)SchemaState)
     {
         case (uint8)ESchemaStateEnum::SSE_WAPN_ATK_IDLE:
-            if ((GameState->GetServerWorldTimeSeconds() - SchemaStateStartTime) >= 3)
-            {
-                if(GenerateAttackPath())
-                {
-                    if(Attacking)
-                    {
-                        SchemaState = ESchemaStateEnum::SSE_WAPN_ATK_ATTACK;
-                    }
-                    else
-                    {
-                        
-                        SchemaState = ESchemaStateEnum::SSE_WAPN_ATK_MOVE;
-                    }
-                }
-                SchemaStateStartTime = GameState->GetServerWorldTimeSeconds();
-            }
+            LogicWapnAtkIdle();
+            break;
+        case (uint8)ESchemaStateEnum::SSE_WAPN_ATK_MOVE:
+            LogicWapnMove();
             break;
         case (uint8)ESchemaStateEnum::SSE_WAPN_ATK_ATTACK:
-            if(GameState->GetServerWorldTimeSeconds() - SchemaStateStartTime > 0.25)
-            {
-                for (ABaseSchemaPawn* Schema : GameState->GetTile(TargetTileX,TargetTileY)->CurrentSchemas)
-                {
-                    DealDamage(Schema);
-                }
-                
-                // if(GameState->GetTile(TargetX,TargetY);
-            }
-            // ********************
+            LogicWapnAttack();
             break;
-            
-            
-        case (uint8)ESchemaStateEnum::SSE_WAPN_ATK_MOVE:
-            if(SchemaStatuses.Contains(ESchemaStatusEnum::SEE2_WAPN_DOUBLESTEP))
+        //case (uint8)ESchemaStateEnum::SSE_WAPN_DEF_IDLE:
+            //WapnDefIdle();
+            //break;
+        //case (uint8)ESchemaStateEnum::SSE_WAPN_DEF_ATTACK:
+            //WapnDefAttack();
+            //break;
+        //case (uint8)ESchemaStateEnum::SSE_WAPN_SUP_ATTACK:
+            //break;
+        case (uint8)ESchemaStateEnum::SSE_WAPN_DAMAGED:
+            LogicWapnHurt();
+            break;
+        case (uint8)ESchemaStateEnum::SSE_WAPN_DYING:
+            LogicWapnDying();
+            break;
+    }
+}
+
+
+
+void AWapnSchemaPawn::LogicWapnAtkIdle()
+{
+    if ((GameState->GetServerWorldTimeSeconds() - SchemaStateStartTime) >= 3)
+    {
+        if(GenerateAttackPath())
+        {
+            if(Attacking)
             {
-                int8 Direction;
-                switch((uint8)SchemaTeam)
+                SchemaState = ESchemaStateEnum::SSE_WAPN_ATK_ATTACK;
+            }
+            else
+            {
+                
+                SchemaState = ESchemaStateEnum::SSE_WAPN_ATK_MOVE;
+            }
+        }
+        SchemaStateStartTime = GameState->GetServerWorldTimeSeconds();
+    }
+
+}
+void AWapnSchemaPawn::LogicWapnMove()
+{
+    //float MovementAnimationProgress = (1.0/3.0) * (GameState->GetServerWorldTimeSeconds() - SchemaStateStartTime);
+    if(SchemaStatuses.Contains(ESchemaStatusEnum::SEE2_WAPN_DOUBLESTEP))
+    {
+        int8 Direction;
+        switch((uint8)SchemaTeam)
+        {
+            case ((uint8)ETeamEnum::TTE_WHITE):
+                Direction = 1;
+                break;
+            case ((uint8)ETeamEnum::TTE_BLACK):
+                Direction = -1;
+                break;
+                
+        }
+        if(!SchemaStatuses.Contains(ESchemaStatusEnum::SSE2_WAPN_COMPLETED_MOVE_CHECK_1) && (GameState->GetServerWorldTimeSeconds() - SchemaStateStartTime) >= 0.75)
+        {
+            if(GameState->GetTile(X + Direction, Y)->IsHabitable())
+            {
+                GameState->ClearOwnerShip(this);
+                SchemaStatuses.Add(ESchemaStatusEnum::SSE2_WAPN_COMPLETED_MOVE_CHECK_1);
+                PossesTile(X + Direction, Y);
+            }
+            else
+            {
+                Relocate();
+            }
+        }
+        else {
+            if(GameState->GetTile(TargetTileX, TargetTileY)->IsHabitable() || SchemaStatuses.Contains(ESchemaStatusEnum::SSE2_WAPN_COMPLETED_MOVE_CHECK_2))
+            {
+                if(!SchemaStatuses.Contains(ESchemaStatusEnum::SSE2_WAPN_COMPLETED_MOVE_CHECK_2) && ((GameState->GetServerWorldTimeSeconds() - SchemaStateStartTime) >= 2.25))
                 {
-                    case ((uint8)ETeamEnum::TTE_WHITE):
-                        Direction = 1;
-                        break;
-                    case ((uint8)ETeamEnum::TTE_BLACK):
-                        Direction = -1;
-                        break;
-                        
-                }
-                if(!SchemaStatuses.Contains(ESchemaStatusEnum::SSE2_WAPN_COMPLETED_MOVE_CHECK_1) && (MovementAnimationProgress >= 0.25))
-                {
-                    if(GameState->GetTile(X + Direction, Y)->IsHabitable())
-                    {
-                        GameState->ClearOwnerShip(this);
-                        SchemaStatuses.Add(ESchemaStatusEnum::SSE2_WAPN_COMPLETED_MOVE_CHECK_1);
-                        PossesTile(X + Direction, Y);
-                    }
-                    else
-                    {
-                        Relocate();
-                    }
-                }
-                else {
-                    if(GameState->GetTile(TargetTileX, TargetTileY)->IsHabitable() || SchemaStatuses.Contains(ESchemaStatusEnum::SSE2_WAPN_COMPLETED_MOVE_CHECK_2))
-                    {
-                        if(!SchemaStatuses.Contains(ESchemaStatusEnum::SSE2_WAPN_COMPLETED_MOVE_CHECK_2) && (MovementAnimationProgress >= 0.75))
-                        {
-                            GameState->ClearOwnerShip(this);
-                            SchemaStatuses.Add(ESchemaStatusEnum::SSE2_WAPN_COMPLETED_MOVE_CHECK_2);
-                            PossesTile(TargetTileX, TargetTileY);
-                        }
-                    }
-                    else
-                    {
-                        Relocate();
-                    }
+                    GameState->ClearOwnerShip(this);
+                    SchemaStatuses.Add(ESchemaStatusEnum::SSE2_WAPN_COMPLETED_MOVE_CHECK_2);
+                    PossesTile(TargetTileX, TargetTileY);
                 }
             }
             else
             {
-                if(!SchemaStatuses.Contains(ESchemaStatusEnum::SSE2_WAPN_COMPLETED_MOVE_CHECK) && (MovementAnimationProgress >= 0.5))
-                {
-                    
-                    if(GameState->GetTile(TargetTileX, TargetTileY)->IsHabitable())
-                    {
-                        SchemaStatuses.Add(ESchemaStatusEnum::SSE2_WAPN_COMPLETED_MOVE_CHECK);
-                        GameState->ClearOwnerShip(this);
-                        PossesTile(TargetTileX, TargetTileY);
-                    }
-                    else
-                    {
-                        Relocate();
-                    }
-                }
+                Relocate();
             }
-            
-            
-            if ((GameState->GetServerWorldTimeSeconds() - SchemaStateStartTime) >= 3)
-            {
-                UE_LOG(LogTemp, Warning, TEXT("Complete!"));
-                
-                SchemaState = ESchemaStateEnum::SSE_WAPN_ATK_IDLE;
-                X = TargetTileX;
-                Y = TargetTileY;
-                SchemaStateStartTime = GameState->GetServerWorldTimeSeconds();
-                SchemaStatuses.Remove(ESchemaStatusEnum::SEE2_WAPN_DOUBLESTEP);
-                SchemaStatuses.Remove(ESchemaStatusEnum::SSE2_WAPN_COMPLETED_MOVE_CHECK);
-                SchemaStatuses.Remove(ESchemaStatusEnum::SSE2_WAPN_COMPLETED_MOVE_CHECK_1);
-                SchemaStatuses.Remove(ESchemaStatusEnum::SSE2_WAPN_COMPLETED_MOVE_CHECK_2);
-                
-            }
-            break;
-        case (uint8)ESchemaStateEnum::SSE_WAPN_DEF_IDLE:
-            //WapnDefIdle();
-            break;
-        case (uint8)ESchemaStateEnum::SSE_WAPN_DEF_ATTACK:
-            //WapnDefAttack();
-            break;
-        case (uint8)ESchemaStateEnum::SSE_WAPN_SUP_ATTACK:
-            break;
-        case (uint8)ESchemaStateEnum::SSE_WAPN_DAMAGED:
-            if((GameState->GetServerWorldTimeSeconds() - SchemaStateStartTime) > 2)
-            {
-                switch((uint8)SchemaConfigurationType)
-                {
-                    case ((uint8)ESchemaBattleConfigurationEnum::BTE_ATTACK):
-                        SchemaState = ESchemaStateEnum::SSE_WAPN_ATK_IDLE;
-                        break;
-                    case ((uint8)ESchemaBattleConfigurationEnum::BTE_DEFEND):
-                        SchemaState = ESchemaStateEnum::SSE_WAPN_DEF_IDLE;
-                        break;
-                    case ((uint8)ESchemaBattleConfigurationEnum::BTE_SUPPORT):
-                        SchemaState = ESchemaStateEnum::SSE_WAPN_SUP_IDLE;
-                        break;
-                    case ((uint8)ESchemaBattleConfigurationEnum::BTE_GLITCH):
-                        SchemaState = ESchemaStateEnum::SSE_DUMMY;
-                        break;
-                        
-                }
-                SchemaStateStartTime = GameState->GetServerWorldTimeSeconds();
-            }
-            break;
-        case (uint8)ESchemaStateEnum::SSE_WAPN_DYING:
-            if((GameState->GetServerWorldTimeSeconds() - SchemaStateStartTime) > 5)
-            {
-                GameState->ClearOwnerShip(this);
-                Destroy();
-                
-            }
-            
-            break;
-    }
-}
-void AWapnSchemaPawn::WapnAnimate()
-{
-    
-    switch((uint8)SchemaState)
-    {
-        case (uint8)ESchemaStateEnum::SSE_WAPN_ATK_IDLE:
-            AnimateWapnIdle();
-            break;
-        case (uint8)ESchemaStateEnum::SSE_WAPN_ATK_ATTACK:
-            AnimateWapnAttack();
-            break;
-        case (uint8)ESchemaStateEnum::SSE_WAPN_ATK_MOVE:
-            AnimateWapnMove();
-            break;
-        case (uint8)ESchemaStateEnum::SSE_WAPN_DEF_IDLE:
-            //WapnDefIdle();
-            break;
-        case (uint8)ESchemaStateEnum::SSE_WAPN_DEF_ATTACK:
-            //WapnDefAttack();
-            break;
-        case (uint8)ESchemaStateEnum::SSE_WAPN_SUP_ATTACK:
-            break;
-        case (uint8)ESchemaStateEnum::SSE_WAPN_DAMAGED:
-            AnimateWapnHurt();
-            break;
-        case (uint8)ESchemaStateEnum::SSE_WAPN_DYING:
-            AnimateWapnDying();
-            break;
-        case (uint8)ESchemaStateEnum::SSE_DUMMY:
-            AnimateWapnIdle();
-            break;
-    }
-}
-
-
-
-void AWapnSchemaPawn::AnimateWapnIdle()
-{
-    SetActorLocation(GenerateDefaultPosition(X, Y));
-    float AnimationProgress3s = fmod((UGameplayStatics::GetTimeSeconds(GetWorld()) - SchemaStateStartTime), 3.0);
-    if(AnimationProgress3s < 0.6)
-    {
-        Wapn_Eye_Sprite_Comp->SetSprite(Wapn_Idle_Eye_1_Sprite);
+        }
     }
     else
     {
-        if(AnimationProgress3s < 0.70)
+        if(!SchemaStatuses.Contains(ESchemaStatusEnum::SSE2_WAPN_COMPLETED_MOVE_CHECK) && (GameState->GetServerWorldTimeSeconds() - SchemaStateStartTime) >= 1.5)
         {
-            Wapn_Eye_Sprite_Comp->SetSprite(Wapn_Idle_Eye_2_Sprite);
-        }
-        else
-        {
-            if(AnimationProgress3s < 0.8)
+            
+            if(GameState->GetTile(TargetTileX, TargetTileY)->IsHabitable())
             {
-                Wapn_Eye_Sprite_Comp->SetSprite(Wapn_Idle_Eye_3_Sprite);
+                SchemaStatuses.Add(ESchemaStatusEnum::SSE2_WAPN_COMPLETED_MOVE_CHECK);
+                GameState->ClearOwnerShip(this);
+                PossesTile(TargetTileX, TargetTileY);
             }
             else
             {
-                if(AnimationProgress3s < 0.85)
-                {
-                    Wapn_Eye_Sprite_Comp->SetSprite(Wapn_Idle_Eye_2_Sprite);
-                }
-                else
-                {
-                    Wapn_Eye_Sprite_Comp->SetSprite(Wapn_Idle_Eye_1_Sprite);
-                }
+                Relocate();
             }
         }
     }
-}
-
-// This automatically slides between the Current X and the Target X
-// Remember X and Y are assigned when the state ends, incase its "Interupted"
-void AWapnSchemaPawn::AnimateWapnMove()
-{
-    if(Wapn_Eye_Sprite_Comp->GetSprite() != Wapn_Idle_Eye_2_Sprite)
+    if ((GameState->GetServerWorldTimeSeconds() - SchemaStateStartTime) >= 3)
     {
-        Wapn_Eye_Sprite_Comp->SetSprite(Wapn_Idle_Eye_2_Sprite);
+        UE_LOG(LogTemp, Warning, TEXT("Complete!"));
+        
+        SchemaState = ESchemaStateEnum::SSE_WAPN_ATK_IDLE;
+        X = TargetTileX;
+        Y = TargetTileY;
+        SchemaStateStartTime = GameState->GetServerWorldTimeSeconds();
+        SchemaStatuses.Remove(ESchemaStatusEnum::SEE2_WAPN_DOUBLESTEP);
+        SchemaStatuses.Remove(ESchemaStatusEnum::SSE2_WAPN_COMPLETED_MOVE_CHECK);
+        SchemaStatuses.Remove(ESchemaStatusEnum::SSE2_WAPN_COMPLETED_MOVE_CHECK_1);
+        SchemaStatuses.Remove(ESchemaStatusEnum::SSE2_WAPN_COMPLETED_MOVE_CHECK_2);
+        
     }
-    
-    float AnimationProgress = (1.0/3.0) * (GameState->GetServerWorldTimeSeconds() - SchemaStateStartTime);
-    FVector TargetLocation = GenerateDefaultPosition(TargetTileX, TargetTileY);
-    FVector StartingLocation = GenerateDefaultPosition(X, Y);
-    FVector PanelDistance = TargetLocation - StartingLocation;
-    PanelDistance = PanelDistance * AnimationProgress;
-    StartingLocation.AddBounded(PanelDistance);
-    SetActorLocation(StartingLocation);
 }
-// This will be a diagnal jump, so extra compatablility is not required
-void AWapnSchemaPawn::AnimateWapnAttack()
+void AWapnSchemaPawn::LogicWapnAttack()
 {
-    
-    float AnimationProgress = (1.0/0.3) * (GameState->GetServerWorldTimeSeconds() - SchemaStateStartTime);
-    FVector TargetLocation = GenerateDefaultPosition(TargetTileX, TargetTileY);
-    FVector StartingLocation = GenerateDefaultPosition(X, Y);
-    FVector PanelDistance = TargetLocation - StartingLocation;
-    PanelDistance = PanelDistance * AnimationProgress;
-    StartingLocation.AddBounded(PanelDistance);
-    float HeightAddition = 200 * FMath::Sin(AnimationProgress * PI);
-    StartingLocation.Z += HeightAddition;
-    SetActorLocation(StartingLocation);
-    
-    
-}
-void AWapnSchemaPawn::AnimateWapnHurt()
-{
-    float AnimationProgress = (1.0/2.0) * (GameState->GetServerWorldTimeSeconds() - SchemaStateStartTime);
-    
-    if(AnimationProgress < 0.3)
+    if(GameState->GetServerWorldTimeSeconds() - SchemaStateStartTime > 0.25)
     {
-        Wapn_Eye_Sprite_Comp->SetSprite(Wapn_Hurt_Eye_1_Sprite);
-    }
-    else {
-        if(AnimationProgress < 0.8)
+        for (ABaseSchemaPawn* Schema : GameState->GetTile(TargetTileX,TargetTileY)->CurrentSchemas)
         {
-            Wapn_Eye_Sprite_Comp->SetSprite(Wapn_Hurt_Eye_2_Sprite);
-        }
-        else {
-            if(AnimationProgress < 0.9)
-            {
-                Wapn_Eye_Sprite_Comp->SetSprite(Wapn_Hurt_Eye_1_Sprite);
-            }
-            else {
-                Wapn_Eye_Sprite_Comp->SetSprite(Wapn_Idle_Eye_1_Sprite);
-            }
+            DealDamage(Schema);
         }
     }
-    // Wapn_Eye_Hurt_2_Sprite
-    // Should be a jerk back animation
 }
-void AWapnSchemaPawn::AnimateWapnDying()
+
+void AWapnSchemaPawn::LogicWapnHurt()
 {
-    Wapn_Eye_Sprite_Comp->SetSprite(Wapn_Hurt_Eye_1_Sprite);
-    FVector v = GetActorLocation();
-    v.Z -= 1.0;
-    SetActorLocation(v);
-    // A Disolving Animation?
+    if((GameState->GetServerWorldTimeSeconds() - SchemaStateStartTime) > 2)
+    {
+        switch((uint8)SchemaConfigurationType)
+        {
+            case ((uint8)ESchemaBattleConfigurationEnum::BTE_ATTACK):
+                SchemaState = ESchemaStateEnum::SSE_WAPN_ATK_IDLE;
+                break;
+            case ((uint8)ESchemaBattleConfigurationEnum::BTE_DEFEND):
+                SchemaState = ESchemaStateEnum::SSE_WAPN_DEF_IDLE;
+                break;
+            case ((uint8)ESchemaBattleConfigurationEnum::BTE_SUPPORT):
+                SchemaState = ESchemaStateEnum::SSE_WAPN_SUP_IDLE;
+                break;
+            case ((uint8)ESchemaBattleConfigurationEnum::BTE_GLITCH):
+                SchemaState = ESchemaStateEnum::SSE_DUMMY;
+                break;
+                
+        }
+        SchemaStateStartTime = GameState->GetServerWorldTimeSeconds();
+    }
+}
+void AWapnSchemaPawn::LogicWapnDying()
+{
+    if((GameState->GetServerWorldTimeSeconds() - SchemaStateStartTime) > 5)
+    {
+        GameState->ClearOwnerShip(this);
+        Destroy();
+        
+    }
 }
 
 
 
-// This happens on Attack, on Movement Fail, on end of world, Ect. Thusly it re-does any states and clears markings
-// It also relocates the Wapn only on ATK configuration, as DEF and Special automatically proccess theirs
+
 void AWapnSchemaPawn::Relocate() {
     
     ClearMarkingStatuses();
@@ -706,3 +506,219 @@ bool AWapnSchemaPawn::GenerateSupportPath()
 
 
 
+void AWapnSchemaPawn::WapnAnimate()
+{
+    
+    switch((uint8)SchemaState)
+    {
+        case (uint8)ESchemaStateEnum::SSE_WAPN_ATK_IDLE:
+            AnimateWapnIdle();
+            break;
+        case (uint8)ESchemaStateEnum::SSE_WAPN_ATK_ATTACK:
+            AnimateWapnAttack();
+            break;
+        case (uint8)ESchemaStateEnum::SSE_WAPN_ATK_MOVE:
+            AnimateWapnMove();
+            break;
+        case (uint8)ESchemaStateEnum::SSE_WAPN_DEF_IDLE:
+            //WapnDefIdle();
+            break;
+        case (uint8)ESchemaStateEnum::SSE_WAPN_DEF_ATTACK:
+            //WapnDefAttack();
+            break;
+        case (uint8)ESchemaStateEnum::SSE_WAPN_SUP_ATTACK:
+            break;
+        case (uint8)ESchemaStateEnum::SSE_WAPN_DAMAGED:
+            AnimateWapnHurt();
+            break;
+        case (uint8)ESchemaStateEnum::SSE_WAPN_DYING:
+            AnimateWapnDying();
+            break;
+        case (uint8)ESchemaStateEnum::SSE_DUMMY:
+            AnimateWapnIdle();
+            break;
+    }
+}
+
+
+
+void AWapnSchemaPawn::AnimateWapnIdle()
+{
+    SetActorLocation(GenerateDefaultPosition(X, Y));
+    float AnimationProgress3s = fmod((UGameplayStatics::GetTimeSeconds(GetWorld()) - SchemaStateStartTime), 3.0);
+    if(AnimationProgress3s < 0.6)
+    {
+        Wapn_Eye_Sprite_Comp->SetSprite(Wapn_Idle_Eye_1_Sprite);
+    }
+    else
+    {
+        if(AnimationProgress3s < 0.70)
+        {
+            Wapn_Eye_Sprite_Comp->SetSprite(Wapn_Idle_Eye_2_Sprite);
+        }
+        else
+        {
+            if(AnimationProgress3s < 0.8)
+            {
+                Wapn_Eye_Sprite_Comp->SetSprite(Wapn_Idle_Eye_3_Sprite);
+            }
+            else
+            {
+                if(AnimationProgress3s < 0.85)
+                {
+                    Wapn_Eye_Sprite_Comp->SetSprite(Wapn_Idle_Eye_2_Sprite);
+                }
+                else
+                {
+                    Wapn_Eye_Sprite_Comp->SetSprite(Wapn_Idle_Eye_1_Sprite);
+                }
+            }
+        }
+    }
+}
+
+// This automatically slides between the Current X and the Target X
+// Remember X and Y are assigned when the state ends, incase its "Interupted"
+void AWapnSchemaPawn::AnimateWapnMove()
+{
+    if(Wapn_Eye_Sprite_Comp->GetSprite() != Wapn_Idle_Eye_2_Sprite)
+    {
+        Wapn_Eye_Sprite_Comp->SetSprite(Wapn_Idle_Eye_2_Sprite);
+    }
+    
+    float AnimationProgress = (1.0/3.0) * (GameState->GetServerWorldTimeSeconds() - SchemaStateStartTime);
+    FVector TargetLocation = GenerateDefaultPosition(TargetTileX, TargetTileY);
+    FVector StartingLocation = GenerateDefaultPosition(X, Y);
+    FVector PanelDistance = TargetLocation - StartingLocation;
+    PanelDistance = PanelDistance * AnimationProgress;
+    StartingLocation.AddBounded(PanelDistance);
+    SetActorLocation(StartingLocation);
+}
+// This will be a diagnal jump, so extra compatablility is not required
+void AWapnSchemaPawn::AnimateWapnAttack()
+{
+    
+    float AnimationProgress = (1.0/0.3) * (GameState->GetServerWorldTimeSeconds() - SchemaStateStartTime);
+    FVector TargetLocation = GenerateDefaultPosition(TargetTileX, TargetTileY);
+    FVector StartingLocation = GenerateDefaultPosition(X, Y);
+    FVector PanelDistance = TargetLocation - StartingLocation;
+    PanelDistance = PanelDistance * AnimationProgress;
+    StartingLocation.AddBounded(PanelDistance);
+    float HeightAddition = 200 * FMath::Sin(AnimationProgress * PI);
+    StartingLocation.Z += HeightAddition;
+    SetActorLocation(StartingLocation);
+    
+    
+}
+void AWapnSchemaPawn::AnimateWapnHurt()
+{
+    float AnimationProgress = (1.0/2.0) * (GameState->GetServerWorldTimeSeconds() - SchemaStateStartTime);
+    
+    if(AnimationProgress < 0.3)
+    {
+        Wapn_Eye_Sprite_Comp->SetSprite(Wapn_Hurt_Eye_1_Sprite);
+    }
+    else {
+        if(AnimationProgress < 0.8)
+        {
+            Wapn_Eye_Sprite_Comp->SetSprite(Wapn_Hurt_Eye_2_Sprite);
+        }
+        else {
+            if(AnimationProgress < 0.9)
+            {
+                Wapn_Eye_Sprite_Comp->SetSprite(Wapn_Hurt_Eye_1_Sprite);
+            }
+            else {
+                Wapn_Eye_Sprite_Comp->SetSprite(Wapn_Idle_Eye_1_Sprite);
+            }
+        }
+    }
+    // Wapn_Eye_Hurt_2_Sprite
+    // Should be a jerk back animation
+}
+void AWapnSchemaPawn::AnimateWapnDying()
+{
+    Wapn_Eye_Sprite_Comp->SetSprite(Wapn_Hurt_Eye_1_Sprite);
+    FVector v = GetActorLocation();
+    v.Z -= 1.0;
+    SetActorLocation(v);
+    // A Disolving Animation?
+}
+
+void AWapnSchemaPawn::CreateWapnVisual()
+{
+    Base = CreateDefaultSubobject<UArrowComponent>(TEXT("ActorBase"));
+    Base->SetVisibility(false);
+    Base->SetRelativeRotation(FRotator(0,0,0));
+    Base->AttachTo(RootComponent);
+    
+    SpriteBase = CreateDefaultSubobject<UArrowComponent>(TEXT("SpriteBase"));
+    SpriteBase->SetVisibility(false);
+    SpriteBase->SetRelativeRotation(FRotator(0,270,0));
+    SpriteBase->AttachTo(Base);
+    
+    NameBase = CreateDefaultSubobject<UArrowComponent>(TEXT("NameBase"));
+    NameBase->SetVisibility(false);
+    NameBase->SetRelativeRotation(FRotator(0,180,0));
+    NameBase->AttachTo(Base);
+    
+    NameTag = CreateDefaultSubobject<UTextRenderComponent>(TEXT("NameTag"));
+    NameTag->SetRelativeLocationAndRotation(FVector(0,0,350), FRotator(0,0,0));
+    NameTag->SetWorldSize(50.0);
+    NameTag->SetText("BROKEN NAMETAG UPDATE");
+    NameTag->SetHorizontalAlignment(EHorizTextAligment::EHTA_Center);
+    NameTag->SetVerticalAlignment(EVerticalTextAligment::EVRTA_TextCenter);
+    NameTag->AttachTo(NameBase);
+    
+    
+    HealthBar = CreateDefaultSubobject<UTextRenderComponent>(TEXT("HealthBar"));
+    HealthBar->SetRelativeLocationAndRotation(FVector(0,0,310), FRotator(0,0,0));
+    HealthBar->SetWorldSize(50.0);
+    HealthBar->SetText("BROKEN HEALTHBAR UPDATE");
+    HealthBar->SetHorizontalAlignment(EHorizTextAligment::EHTA_Center);
+    HealthBar->SetVerticalAlignment(EVerticalTextAligment::EVRTA_TextCenter);
+    HealthBar->AttachTo(NameBase);
+    
+    Wapn_Body_Sprite_Comp = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("Wapn_Body_Sprite_Comp"));
+    Wapn_Eye_Sprite_Comp = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("Wapn_Eye_Sprite_Comp"));
+    static ConstructorHelpers::FObjectFinder<UPaperSprite> Wapn_Body_SpriteObj(TEXT("PaperSprite'/Game/GanosContent/Sprites/Wapn/Wapn_Body_Sprite.Wapn_Body_Sprite'"));
+    
+    static ConstructorHelpers::FObjectFinder<UPaperSprite> Wapn_Idle_Eye_1_SpriteObj(TEXT("PaperSprite'/Game/GanosContent/Sprites/Wapn/Wapn_Eye_Idle_1_Sprite.Wapn_Eye_Idle_1_Sprite'"));
+    static ConstructorHelpers::FObjectFinder<UPaperSprite> Wapn_Idle_Eye_2_SpriteObj(TEXT("PaperSprite'/Game/GanosContent/Sprites/Wapn/Wapn_Eye_Idle_2_Sprite.Wapn_Eye_Idle_2_Sprite'"));
+    static ConstructorHelpers::FObjectFinder<UPaperSprite> Wapn_Idle_Eye_3_SpriteObj(TEXT("PaperSprite'/Game/GanosContent/Sprites/Wapn/Wapn_Eye_Idle_3_Sprite.Wapn_Eye_Idle_3_Sprite'"));
+    static ConstructorHelpers::FObjectFinder<UPaperSprite> Wapn_Hurt_Eye_1_SpriteObj(TEXT("PaperSprite'/Game/GanosContent/Sprites/Wapn/Wapn_Eye_Hurt_1_Sprite.Wapn_Eye_Hurt_1_Sprite'"));
+    static ConstructorHelpers::FObjectFinder<UPaperSprite> Wapn_Hurt_Eye_2_SpriteObj(TEXT("PaperSprite'/Game/GanosContent/Sprites/Wapn/Wapn_Eye_Hurt_2_Sprite.Wapn_Eye_Hurt_2_Sprite'"));
+    
+    
+    static ConstructorHelpers::FObjectFinder<UMaterial> Material(TEXT("Material'/Paper2D/DefaultLitSpriteMaterial.DefaultLitSpriteMaterial'"));
+    UMaterial* SpriteMaterial = (UMaterial*)Material.Object;
+    
+    
+    Wapn_Body_Sprite = Wapn_Body_SpriteObj.Object;
+    Wapn_Idle_Eye_1_Sprite = Wapn_Idle_Eye_1_SpriteObj.Object;
+    Wapn_Idle_Eye_2_Sprite = Wapn_Idle_Eye_2_SpriteObj.Object;
+    Wapn_Idle_Eye_3_Sprite = Wapn_Idle_Eye_3_SpriteObj.Object;
+    Wapn_Hurt_Eye_1_Sprite = Wapn_Hurt_Eye_1_SpriteObj.Object;
+    Wapn_Hurt_Eye_2_Sprite = Wapn_Hurt_Eye_2_SpriteObj.Object;
+    
+    Wapn_Body_Sprite_Comp->SetSprite(Wapn_Body_Sprite);
+    Wapn_Body_Sprite_Comp->SetRelativeLocation(FVector(0,0,135));
+    Wapn_Body_Sprite_Comp->SetRelativeScale3D(FVector(1,1,1));
+    Wapn_Body_Sprite_Comp->SetRelativeRotation(FRotator(0,0,0));
+    Wapn_Body_Sprite_Comp->SetMaterial(0, SpriteMaterial);
+    Wapn_Eye_Sprite_Comp->SetSprite(Wapn_Idle_Eye_1_Sprite);
+    Wapn_Eye_Sprite_Comp->SetRelativeLocation(FVector(-29,-0.2,226));
+    Wapn_Eye_Sprite_Comp->SetRelativeScale3D(FVector(1,1,1));
+    Wapn_Eye_Sprite_Comp->SetRelativeRotation(FRotator(0,0,0));
+    Wapn_Eye_Sprite_Comp->SetMaterial(0, SpriteMaterial);
+    
+    
+    Wapn_Body_Sprite_Comp->AttachTo(SpriteBase);
+    Wapn_Eye_Sprite_Comp->AttachTo(SpriteBase);
+}
+
+
+
+
+// This happens on Attack, on Movement Fail, on end of world, Ect. Thusly it re-does any states and clears markings
+// It also relocates the Wapn only on ATK configuration, as DEF and Special automatically proccess theirs

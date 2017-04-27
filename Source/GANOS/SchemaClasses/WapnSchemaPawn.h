@@ -50,19 +50,37 @@ public:
     virtual void UpdateHealthBar() override;
     virtual void UpdateNameTag() override;
 
-    // GENERAL METHODS
+    // Server Logic Functions
     
     /**
      Triggers any Wapn logic that is needed
      */
     void WapnLogic();
-    /**
-     Triggers any Wapn animations that is needed
-     */
-    void WapnAnimate();
-
     
-    // SERVER LOGIC FUNCTIONS
+    // Seperated out Methods
+    
+    /**
+     Checks for Waittime, calculates path, and changes State if viable and relocates if it is not
+     */
+    void LogicWapnAtkIdle();
+    /**
+     Marks paths and aborts move if the path becomes obstructed
+     */
+    void LogicWapnMove();
+    /**
+     Marks path and checks for target before landing and aborts if it moves
+     */
+    void LogicWapnAttack();
+    /**
+     Changes State, makes immune, and relocates and changes state when finished
+     */
+    void LogicWapnHurt();
+    /**
+     Waits X amount of time and removes the Wapn
+     */
+    void LogicWapnDying();
+    
+    
     /**
      A Method that figures out which side is the Wapns side, and picks a random tile from the farthest out point, if it fails the Wapn will be set back into idle mode
      */
@@ -94,16 +112,23 @@ public:
      This one would try to race across to the other side of the board to promote itself
      */
     bool GenerateSupportPath();
-    
+
 
     
     
     // CLIENT ANIMATION METHODS
+    /**
+     Triggers any Wapn animations that is needed
+     */
+    void WapnAnimate();
     /*
      Used to add the Sprite component visuals
      Plan: Only add the Components on Clients that NEED it ( No Dedicated Server )
      */
     void CreateWapnVisual();
+    
+    // Seperated out code
+    
     /**
      Animates Wapn to do the standard idle animation
      Plan: Make the time between blinks randomish, and add some more facial expresions
@@ -129,10 +154,6 @@ public:
      Plan: Add an animated disolve sequence
      */
     void AnimateWapnDying();
-    
-    
-    
-
     
     
 
